@@ -22,4 +22,14 @@ class Player : public GameElement {
   const graphics::Color kBlue{0, 0, 255};
 };
 
+class PlayerProjectile : public GameElement {
+ public:
+  PlayerProjectile() : PlayerProjectile(0, 0) {}
+  Player(int x, int y) : GameElement(x, y, 5, 5) {}
+
+  void Draw(graphics::Image& screen) override;
+
+  void Move(const graphics::Image& screen) override;
+};
+
 #endif
