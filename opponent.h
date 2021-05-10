@@ -31,6 +31,8 @@ class Opponent : public GameElement {
   void Draw(graphics::Image& screen) override;
 
   void Move(const graphics::Image& screen) override;
+  
+  std::unique_ptr<OpponentProjectile> LaunchProjectile();
 
  private:
   /*  const graphics::Color kRed{255, 0, 0};

@@ -22,7 +22,7 @@ class GameElement {
 
   bool GetIsActive() const { return is_active_; }
 
-  bool IntersectsWith(const GameElement& other);
+  bool IntersectsWith(GameElement *other);
 
   bool IsOutOfBounds(const graphics::Image& screen);
 
