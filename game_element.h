@@ -9,6 +9,7 @@ class GameElement {
   GameElement(int x, int y, int width, int height)
       : x_(x), y_(y), height_(height), width_(width) {}
 
+ public:
   void SetX(int x) { x_ = x; }
   void SetY(int y) { y_ = y; }
   void SetIsActive(bool is_active) { is_active_ = is_active; }
@@ -21,12 +22,12 @@ class GameElement {
 
   bool GetIsActive() const { return is_active_; }
 
-  bool IntersectsWith(const GameElement& element);
+  bool IntersectsWith(const GameElement& other);
 
   bool IsOutOfBounds(const graphics::Image& screen);
 
-  virtual void Draw(graphics::Image &screen) = 0;
-  virtual void Move(const graphics::Image &screen) = 0;
+  virtual void Draw(graphics::Image& game_screen) = 0;
+  virtual void Move(const graphics::Image& game_screen) = 0;
 
  protected:
   void PadPoints(std::vector<int>& points, int pad_x, int pad_y);

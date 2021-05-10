@@ -1,8 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
-
 #include <vector>
-#include "cpputils/graphics/image.h"
+#include "cpputils/graphics/image_event.h"
 #include "opponent.h"
 #include "player.h"
 
@@ -24,14 +23,23 @@ class Game : public graphics::AnimationEventListener,
   Player& GetPlayer() { return player_; }
 
   void Init();
+
   void CreateOpponents();
+
   void CreateOpponentProjectiles();
+
   void CreatePlayerProjectiles();
+
   void MoveGameElements();
+
   void FilterIntersections();
+
   void UpdateScreen();
+
   void Start();
+
   void OnMouseEvent(const graphics::MouseEvent& event) override;
+
   void OnAnimationStep() override;
 
  private:
