@@ -7,4 +7,5 @@ int main() {
   Game game;
   game.Init();
   game.Start();
+  return 0;
 }

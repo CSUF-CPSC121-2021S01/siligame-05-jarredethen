@@ -25,8 +25,8 @@ class GameElement {
 
   bool IsOutOfBounds(const graphics::Image& screen);
 
-  virtual void Draw(graphics::Image& screen) = 0;
-  virtual void Move(const graphics::Image& screen) = 0;
+  virtual void Draw(graphics::Image &screen) = 0;
+  virtual void Move(const graphics::Image &screen) = 0;
 
  protected:
   void PadPoints(std::vector<int>& points, int pad_x, int pad_y);

@@ -120,7 +120,7 @@ void Game::OnMouseEvent(const graphics::MouseEvent& event) {
       }
 }
 
-void game::OnAnimationStep() {
+void Game::OnAnimationStep() {
   MoveGameElements();
   FilterIntersections();
   UpdateScreen();
