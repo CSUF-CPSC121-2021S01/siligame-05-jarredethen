@@ -127,3 +127,12 @@ void Game::OnAnimationStep() {
   UpdateScreen();
   screen_.Flush();
 }
+
+void Game::LaunchProjectiles() {
+  for (int i = 0; i < opponents_.size(); i++) {
+    std::unique_ptr<OpponentProjectile> o_projectiles = opponents_[i]->LaunchProjectile();
+    if (o_projectiles != nullptr) {
+      opponent_projectiles_.push_back(std::move(o_projectiles));
+    }
+  }
+}

@@ -1,5 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
+
+#include <memory>
 #include <vector>
 #include "cpputils/graphics/image_event.h"
 #include "opponent.h"
@@ -41,6 +43,8 @@ class Game : public graphics::AnimationEventListener,
   void OnMouseEvent(const graphics::MouseEvent& event) override;
 
   void OnAnimationStep() override;
+
+  void LaunchProjectiles();
 
  private:
   graphics::Image screen_;

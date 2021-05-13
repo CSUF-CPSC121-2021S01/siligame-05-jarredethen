@@ -1,6 +1,7 @@
 #ifndef OPPONENT_H
 #define OPPONENT_H
 
+#include <memory>
 #include <vector>
 #include "cpputils/graphics/image.h"
 #include "game_element.h"
@@ -32,7 +33,7 @@ class Opponent : public GameElement {
 
   void Move(const graphics::Image& screen) override;
   
-  std::unique_ptr<OpponentProjectile> LaunchProjectile();
+  std::unique_ptr<class OpponentProjectile> LaunchProjectile();
 
  private:
   /*  const graphics::Color kRed{255, 0, 0};
