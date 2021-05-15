@@ -14,24 +14,13 @@ void Game::Init() {
 
 void Game::CreateOpponents() {
   for (int i = 0; i < 5; i++) {
-    Opponent opponent(100 * i, 20);
+   /* Opponent opponent(100 * i, 20);
     opponents_->push_back(opponent);
+    */
+    std::unique_ptr<Opponent> opponent = std::make_unique<Opponent>(100 * i, 20);
+    opponents_.push_back(std::move(opponent));
   }
 }
-
-/*  void Game::CreateOpponentProjectiles() {
-  for (int i = 0; i < 5; i++) {
-    OpponentProjectile o_proj(100 * i, 100);
-    opponent_projectiles_.push_back(o_proj);
-  }
-}
-
-void Game::CreatePlayerProjectiles() {
-  for (int i = 0; i < 5; i++) {
-    PlayerProjectile p_proj(100 * i, 450);
-    player_projectiles_.push_back(p_proj);
-  }
-}  */
 
 void Game::MoveGameElements() {
   for (int i = 0; i < opponents_.size(); i++) {
@@ -53,10 +42,10 @@ void Game::MoveGameElements() {
 
 void Game::FilterIntersections() {
   for (int i = 0; i < opponents_.size(); i++) {
-    if (opponents_[i]->GetIsActive() && player_->GetIsActive() &&
-        player_->IntersectsWith(opponents_[i])) {
+    if (opponents_[i]->GetIsActive() && player_.GetIsActive() &&
+        player_.IntersectsWith(opponents_[i])) {
       opponents_[i]->SetIsActive(false);
-      player_->SetIsActive(false);
+      player_.SetIsActive(false);
     } else {
       for (int j = 0; j < player_projectiles_.size(); j++) {
         if (opponents_[i]->GetIsActive() &&
@@ -69,10 +58,10 @@ void Game::FilterIntersections() {
     }
   }
   for (int i = 0; i < opponent_projectiles_.size(); i++) {
-    if (opponent_projectiles_[i]->GetIsActive() && player_->GetIsActive() &&
-        player_->IntersectsWith(opponent_projectiles_[i])) {
+    if (opponent_projectiles_[i]->GetIsActive() && player_.GetIsActive() &&
+        player_.IntersectsWith(opponent_projectiles_[i])) {
       opponent_projectiles_[i]->SetIsActive(false);
-      player_->SetIsActive(false);
+      player_.SetIsActive(false);
     }
   }
 }
@@ -81,8 +70,11 @@ void Game::UpdateScreen() {
   screen_.DrawRectangle(0, 0, screen_.GetWidth(),
                              screen_.GetHeight(),
                              graphics::Color(255, 255, 255));
-  if (player_->GetIsActive()) {
-    player_->Draw(screen_);
+  screen_.DrawText(0, 0, "Score: " + std::to_string(GetScore()), 15, graphics::Color(255, 255, 255));
+  if (player_.GetIsActive()) {
+    player_.Draw(screen_);
+  } else {
+    screen_.DrawText(400, 300, "G A M E  O V E R", 100, graphics::Color(255, 0, 0));
   }
   for (int i = 0; i < opponents_.size(); i++) {
     if (opponents_[i]->GetIsActive()) {
@@ -119,11 +111,23 @@ void Game::OnMouseEvent(const graphics::MouseEvent& event) {
       player_.SetY(oy);
     }
   }
+  if (event.GetMouseAction() == graphics::MouseAction::kPressed ||
+      event.GetMouseAction() == graphics::MouseAction::kDragged) {
+        std::unique_ptr<PlayerProjectile> mouseAction = std::make_unique<PlayerProjectile>(player_.GetX(), player_.GetY());
+        player_projectiles_.push_back(std::move(mouseAction));
+      }
 }
 
 void Game::OnAnimationStep() {
+  for (int i = 0; i < opponents_.size(); i++) {
+    if (opponents_[i]->GetIsActive() == false) {
+      CreateOpponents();
+    }
+  }
   MoveGameElements();
+  LaunchProjectiles();
   FilterIntersections();
+  RemoveInactive();
   UpdateScreen();
   screen_.Flush();
 }
@@ -133,6 +137,49 @@ void Game::LaunchProjectiles() {
     std::unique_ptr<OpponentProjectile> o_projectiles = opponents_[i]->LaunchProjectile();
     if (o_projectiles != nullptr) {
       opponent_projectiles_.push_back(std::move(o_projectiles));
+    }
+  }
+}
+
+int Game::GetScore() { //  *************************************************************
+  for (int i = 0; player_projectiles_.size(); i++) {
+    for (int j = 0; j < opponents_.size(); j++) {
+      if (player_projectiles_[i]->IntersectsWith(opponents_)) {
+        score_++;
+        return score_;
+      }
+    }
+  }
+  return score_;
+}
+
+bool Game::HasLost() {
+  for (int i = 0; i < opponent_projectiles_.size(); i++) {
+    for (int j = 0; j < opponents_.size(); j++) {
+      if (player_.IntersectsWith(opponent_projectiles_[i]) || (player_.IntersectsWith(opponents_[j]))) {
+        has_lost_ = true;
+      } else {
+        has_lost_ = false;
+      }
+    }
+  }
+  return has_lost_;
+}
+
+void Game::RemoveInactive() {
+  for (int i = opponents_.size() - 1; i >= 0; i--) {
+    if (!opponents_[i]->GetIsActive()) {
+      opponents_.erase(opponents_.begin() + i);
+    }
+  }
+  for (int i = opponent_projectiles_.size() - 1; i >= 0; i--) {
+    if (!opponent_projectiles_[i]->GetIsActive()) {
+      opponent_projectiles_.erase(opponent_projectiles_.begin() + i);
+    }
+  }
+  for (int i = player_projectiles_.size() - 1; i >= 0; i--) {
+    if (!player_projectiles_[i]->GetIsActive()) {
+      player_projectiles_.erase(player_projectiles_.begin() + i);
     }
   }
 }

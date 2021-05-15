@@ -10,7 +10,7 @@ bool GameElement::IsOutOfBounds(const graphics::Image& screen) {
 bool GameElement::IntersectsWith(GameElement *other) {
   return !(GetX() > other->GetX() + other->GetWidth() ||
            other->GetX() > GetX() + GetWidth() ||
-           GetY() > other.GetY() + other->GetHeight() ||
+           GetY() > other->GetY() + other->GetHeight() ||
            other->GetY() > GetY() + GetHeight());
 }
 

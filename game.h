@@ -14,12 +14,12 @@ class Game : public graphics::AnimationEventListener,
   Game(int width, int height) : screen_(width, height) {}
 
   graphics::Image& GetGameScreen() { return screen_; }
-  std::vector<std::unique_ptr<Opponent>>& GetOpponents() { return &opponents_; }
+  std::vector<std::unique_ptr<Opponent>>& GetOpponents() { return opponents_; }
   std::vector<std::unique_ptr<OpponentProjectile>>& GetOpponentProjectiles() {
-    return &opponent_projectiles_;
+    return opponent_projectiles_;
   }
   std::vector<std::unique_ptr<PlayerProjectile>>& GetPlayerProjectiles() {
-    return &player_projectiles_;
+    return player_projectiles_;
   }
 
   Player& GetPlayer() { return player_; }
@@ -46,12 +46,20 @@ class Game : public graphics::AnimationEventListener,
 
   void LaunchProjectiles();
 
+  int GetScore();
+
+  bool HasLost();
+
+  void RemoveInactive();
+
  private:
   graphics::Image screen_;
-  std::unique_ptr<Opponent> opponents_;
-  std::unique_ptr<OpponentProjectile> opponent_projectiles_;
-  std::unique_ptr<PlayerProjectile> player_projectiles_;
+  std::vector<std::unique_ptr<Opponent>> opponents_;
+  std::vector<std::unique_ptr<OpponentProjectile>> opponent_projectiles_;
+  std::vector<std::unique_ptr<PlayerProjectile>> player_projectiles_;
   Player player_;
+  int score_ = 0;
+  bool has_lost_ = false;
 };
 
 #endif

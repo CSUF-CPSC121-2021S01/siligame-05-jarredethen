@@ -97,7 +97,15 @@ void OpponentProjectile::Move(const graphics::Image& screen) {
 
 
 std::unique_ptr<class OpponentProjectile> Opponent::LaunchProjectile() {
-  std::unique_ptr<OpponentProjectile> o_proj = std::make_unique<OpponentProjectile>();
-  std::unique_ptr<OpponentProjectile> launch(std::move(o_proj));
-  return std::move(launch);
+  std::unique_ptr<OpponentProjectile> o_proj;
+  Opponent opponent;
+  int i = 0;
+  if (i < 10) {
+    i++;
+    return nullptr;
+  } else {
+    i = 0;
+    o_proj = std::make_unique<OpponentProjectile>(opponent.GetX(), opponent.GetY());
+    return std::move(o_proj);
+  }
 }
