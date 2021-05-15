@@ -32,7 +32,7 @@ class Opponent : public GameElement {
   void Draw(graphics::Image& screen) override;
 
   void Move(const graphics::Image& screen) override;
-  
+
   std::unique_ptr<class OpponentProjectile> LaunchProjectile();
 
  private:
