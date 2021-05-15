@@ -42,6 +42,7 @@ void Game::FilterIntersections() {
         player_.IntersectsWith(opponents_[i].get())) {
       opponents_[i]->SetIsActive(false);
       player_.SetIsActive(false);
+      has_lost_ = true;
     } else {
       for (int j = 0; j < player_projectiles_.size(); j++) {
         if (opponents_[i]->GetIsActive() &&
@@ -49,6 +50,7 @@ void Game::FilterIntersections() {
             player_projectiles_[j]->IntersectsWith(opponents_[i].get())) {
           opponents_[i]->SetIsActive(false);
           player_projectiles_[j]->SetIsActive(false);
+          score_++;
         }
       }
     }
@@ -58,6 +60,7 @@ void Game::FilterIntersections() {
         player_.IntersectsWith(opponent_projectiles_[i].get())) {
       opponent_projectiles_[i]->SetIsActive(false);
       player_.SetIsActive(false);
+      has_lost_ = true;
     }
   }
 }
@@ -65,13 +68,13 @@ void Game::FilterIntersections() {
 void Game::UpdateScreen() {
   screen_.DrawRectangle(0, 0, screen_.GetWidth(), screen_.GetHeight(),
                         graphics::Color(255, 255, 255));
-  screen_.DrawText(0, 0, "Score: " + std::to_string(GetScore()), 15,
-                   graphics::Color(255, 255, 255));
+  screen_.DrawText(0, 0, "Score: " + std::to_string(GetScore()), 20,
+                   graphics::Color(0, 0, 0));
+  if (has_lost_ == true) {
+    screen_.DrawText(200, 200, "GAME OVER", 75, graphics::Color(255, 0, 0));
+  }
   if (player_.GetIsActive()) {
     player_.Draw(screen_);
-  } else {
-    screen_.DrawText(400, 300, "G A M E  O V E R", 100,
-                     graphics::Color(255, 0, 0));
   }
   for (int i = 0; i < opponents_.size(); i++) {
     if (opponents_[i]->GetIsActive()) {
@@ -139,34 +142,11 @@ void Game::LaunchProjectiles() {  // ********************
 }
 
 int Game::GetScore() {  // *******************************
-  if (player_.GetIsActive()) {
-    for (int i = 0; i < player_projectiles_.size(); i++) {
-      for (int j = 0; j < opponents_.size(); j++) {
-        if (player_projectiles_[i]->IntersectsWith(opponents_[i].get())) {
-          score_++;
-          return score_;
-        }
-      }
-    }
-    return score_;
-  } else {
+  if (!player_.GetIsActive()) {
     return 0;
+  } else {
+    return score_;
   }
-}
-
-bool Game::HasLost() {  // ********************
-  for (int i = 0; i < opponent_projectiles_.size(); i++) {
-    for (int j = 0; j < opponents_.size(); j++) {
-      if (player_.IntersectsWith(opponent_projectiles_[i].get()) ||
-          (player_.IntersectsWith(opponents_[j].get()))) {
-        player_.SetIsActive(false);
-        has_lost_ = true;
-      } else {
-        has_lost_ = false;
-      }
-    }
-  }
-  return has_lost_;
 }
 
 void Game::RemoveInactive() {
